@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>Birthday Surprise Card — Ada Sesuatu Buat Kamu 🎁</title>
+    <meta
+      name="description"
+      content="Website ucapan ulang tahun interaktif yang romantis, hangat, dan playful dengan animasi hadiah, surat cinta, dan perayaan ulang tahun."
+    />
+    <meta property="og:title" content="Birthday Surprise Card — Ada Sesuatu Buat Kamu 🎁" />
+    <meta
+      property="og:description"
+      content="Website ucapan ulang tahun interaktif yang romantis, hangat, dan playful dengan animasi hadiah, surat cinta, dan perayaan ulang tahun."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#1e102b" />
+
+    <!-- Google Fonts (dengan fallback font sistem jika offline/gagal dimuat) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Stylesheet Utama -->
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body data-scene="OPENING">
+    <!-- Lapisan Cahaya Ambient Background -->
+    <div class="ambient-backdrop" aria-hidden="true">
+      <div class="ambient-orb orb-1"></div>
+      <div class="ambient-orb orb-2"></div>
+      <div class="ambient-orb orb-3"></div>
+    </div>
+
+    <!-- Canvas Partikel Latar Belakang (Bintang, Cahaya, & Hati Melayang) -->
+    <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+    <!-- Lapisan Elemen Melayang Interaktif (Balon & Hati saat Perayaan) -->
+    <div id="floating-elements-layer" class="floating-elements-layer" aria-hidden="true"></div>
+
+    <!-- Canvas Efek Confetti & Sparkle -->
+    <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+    <!-- Navigasi Atas: Indikator Tahap & Kontrol Musik -->
+    <header class="top-hud">
+      <div class="step-indicator" aria-label="Tahap kejutan ulang tahun">
+        <span class="step-dot active" data-step="OPENING" title="Pembuka">✨</span>
+        <span class="step-line"></span>
+        <span class="step-dot" data-step="GIFT" title="Hadiah">🎁</span>
+        <span class="step-line"></span>
+        <span class="step-dot" data-step="LETTER" title="Surat">💌</span>
+        <span class="step-line"></span>
+        <span class="step-dot" data-step="CELEBRATION" title="Perayaan">🎂</span>
+      </div>
+
+      <button
+        type="button"
+        id="btn-audio-toggle"
+        class="audio-btn"
+        aria-pressed="true"
+        aria-label="Matikan atau nyalakan efek suara dan musik"
+      >
+        <span id="audio-icon" class="audio-icon" aria-hidden="true">🔊</span>
+        <span id="audio-label" class="audio-label">Suara: ON</span>
+      </button>
+    </header>
+
+    <!-- Kontainer Panggung Utama -->
+    <main class="stage-container">
+      <!-- ========================================================
+           SCENE 1: OPENING / INTRO
+           ======================================================== -->
+      <section
+        id="scene-opening"
+        class="scene active"
+        aria-labelledby="opening-title"
+      >
+        <div class="scene-card glass-panel opening-panel">
+          <div class="floating-badge" aria-hidden="true">
+            <span class="sparkle-spin">✦</span>
+            <span>Special Delivery</span>
+            <span class="sparkle-spin">✦</span>
+          </div>
+
+          <div class="mystery-icon-wrap" aria-hidden="true">
+            <div class="mystery-glow-ring"></div>
+            <div class="mystery-star-cluster">
+              <span class="star-item s-1">✨</span>
+              <span class="star-item s-2">🌟</span>
+              <span class="star-item s-3">✨</span>
+            </div>
+          </div>
+
+          <h1 id="opening-title" class="scene-title">
+            Pssst... ada sesuatu buat kamu...
+          </h1>
+
+          <p class="scene-subtitle">
+            Coba tarik napas dulu, senyum dikit, terus klik tombol di bawah yaa 👀✨
+          </p>
+
+          <div class="action-wrap">
+            <button type="button" id="btn-open-surprise" class="btn-primary btn-glow">
+              <span class="btn-text">Buka Surprise 🎁</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           SCENE 2: BIRTHDAY GIFT
+           ======================================================== -->
+      <section
+        id="scene-gift"
+        class="scene"
+        aria-labelledby="gift-title"
+        hidden
+      >
+        <div class="scene-card glass-panel gift-panel">
+          <h2 id="gift-title" class="scene-title">
+            Hmm... kayaknya ada sesuatu di dalam sini 👀
+          </h2>
+          <p class="scene-subtitle" id="gift-hint-text">
+            Kotaknya agak goyang-goyang tuh, coba kita buka sekarang!
+          </p>
+
+          <!-- Ilustrasi Kotak Hadiah Interaktif (Murni CSS) -->
+          <div
+            id="gift-interactive-area"
+            class="gift-stage"
+            role="button"
+            tabindex="0"
+            aria-label="Kotak hadiah ulang tahun, klik untuk membuka"
+          >
+            <!-- Efek Sinar Cahaya saat Hadiah Terbuka -->
+            <div class="gift-light-burst" aria-hidden="true"></div>
+            <div class="gift-aura-glow" aria-hidden="true"></div>
+
+            <!-- Partikel Dekorasi di Sekitar Hadiah -->
+            <span class="gift-sparkle gs-1" aria-hidden="true">✨</span>
+            <span class="gift-sparkle gs-2" aria-hidden="true">💖</span>
+            <span class="gift-sparkle gs-3" aria-hidden="true">✨</span>
+            <span class="gift-sparkle gs-4" aria-hidden="true">⭐</span>
+
+            <!-- Kotak Hadiah -->
+            <div id="gift-box" class="gift-box">
+              <!-- Tutup Kotak & Pita Atas -->
+              <div class="gift-lid">
+                <div class="gift-bow">
+                  <div class="bow-loop bow-left"></div>
+                  <div class="bow-loop bow-right"></div>
+                  <div class="bow-knot"></div>
+                  <div class="bow-tail bow-tail-left"></div>
+                  <div class="bow-tail bow-tail-right"></div>
+                </div>
+                <div class="lid-ribbon-h"></div>
+                <div class="lid-ribbon-v"></div>
+              </div>
+
+              <!-- Isi Kejutan yang Muncul Saat Kotak Terbuka -->
+              <div class="gift-inner-surprise" aria-hidden="true">
+                <span>💌</span>
+              </div>
+
+              <!-- Badan Kotak -->
+              <div class="gift-body">
+                <div class="body-ribbon-v"></div>
+                <div class="body-ribbon-h"></div>
+                <div class="gift-tag" aria-hidden="true">For You ❤️</div>
+              </div>
+            </div>
+
+            <!-- Bayangan Lantai Kotak -->
+            <div class="gift-floor-shadow" aria-hidden="true"></div>
+          </div>
+
+          <div class="action-wrap">
+            <button type="button" id="btn-open-gift" class="btn-primary btn-glow">
+              <span class="btn-text">Buka Hadiahnya 🎁</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           SCENE 3: INTERACTIVE LETTER & MESSAGE
+           ======================================================== -->
+      <section
+        id="scene-letter"
+        class="scene"
+        aria-labelledby="letter-scene-title"
+        hidden
+      >
+        <!-- Sub-view 3A: Amplop Tertutup -->
+        <div id="envelope-view" class="scene-card glass-panel envelope-panel">
+          <h2 id="letter-scene-title" class="scene-title">
+            Kayaknya ada surat buat kamu...
+          </h2>
+          <p class="scene-subtitle">
+            Masih hangat nih, ditulis khusus buat orang paling spesial ❤️
+          </p>
+
+          <!-- Amplop Digital CSS Interaktif -->
+          <div
+            id="envelope-interactive-area"
+            class="envelope-stage"
+            role="button"
+            tabindex="0"
+            aria-label="Amplop surat ulang tahun, klik untuk membuka surat"
+          >
+            <div class="envelope-glow" aria-hidden="true"></div>
+
+            <div id="envelope" class="envelope">
+              <!-- Bagian Belakang Amplop -->
+              <div class="envelope-back"></div>
+
+              <!-- Kertas Surat di Dalam Amplop (Akan naik saat amplop dibuka) -->
+              <div class="envelope-letter-sheet" aria-hidden="true">
+                <div class="mini-letter-header">
+                  <span>❤️</span>
+                  <span class="mini-line"></span>
+                </div>
+                <div class="mini-letter-lines">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+
+              <!-- Lipatan Samping & Bawah Amplop -->
+              <div class="envelope-pocket"></div>
+
+              <!-- Lipatan Penutup Atas Amplop -->
+              <div class="envelope-flap"></div>
+
+              <!-- Segel Lilin Hati -->
+              <div class="wax-seal" aria-hidden="true">
+                <span class="wax-heart">❤️</span>
+              </div>
+            </div>
+
+            <!-- Hati Melayang Kecil di Sekitar Amplop -->
+            <span class="env-float-heart eh-1" aria-hidden="true">💕</span>
+            <span class="env-float-heart eh-2" aria-hidden="true">✨</span>
+            <span class="env-float-heart eh-3" aria-hidden="true">💗</span>
+          </div>
+
+          <div class="action-wrap">
+            <button type="button" id="btn-open-letter" class="btn-primary btn-glow">
+              <span class="btn-text">Buka Surat 💌</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sub-view 3B: Isi Kertas Surat (Muncul setelah amplop terbuka) -->
+        <div id="message-view" class="letter-paper-wrapper" hidden>
+          <article class="letter-paper-card" aria-label="Isi surat ulang tahun">
+            <!-- Dekorasi Sudut & Header Kertas Surat -->
+            <div class="paper-top-bar">
+              <div class="paper-stamp">
+                <span class="stamp-icon">🎂</span>
+                <span class="stamp-label">Birthday Mail</span>
+              </div>
+              <div class="paper-meta">
+                <span>Spesial Buat Kamu</span>
+                <span aria-hidden="true">·</span>
+                <span>With Love ❤️</span>
+              </div>
+            </div>
+
+            <div class="paper-divider" aria-hidden="true"></div>
+
+            <!-- Area Teks Surat dengan Efek Typing -->
+            <div class="letter-body-container">
+              <div
+                id="letter-typed-text"
+                class="letter-typed-text"
+                aria-live="polite"
+              ></div>
+              <span id="typing-cursor" class="typing-cursor" aria-hidden="true">|</span>
+            </div>
+
+            <!-- Tombol Skip Typing (Hanya tampil saat animasi ketik berlangsung) -->
+            <div id="skip-typing-wrap" class="skip-typing-wrap">
+              <button type="button" id="btn-skip-typing" class="btn-text-subtle">
+                Tampilkan seluruh surat langsung ✨
+              </button>
+            </div>
+
+            <!-- Bagian Bawah Surat & Tombol Lanjut (Muncul setelah selesai ketik) -->
+            <footer id="letter-footer" class="letter-footer" hidden>
+              <div class="letter-signature">
+                <p class="signature-text">— Dari yang selalu sayang & bangga sama kamu ❤️</p>
+              </div>
+
+              <div class="letter-next-prompt">
+                <p class="finished-reading-hint">Sudah selesai baca? 👀</p>
+                <button
+                  type="button"
+                  id="btn-to-celebration"
+                  class="btn-primary btn-glow"
+                >
+                  <span class="btn-text">Ada satu lagi... 👀</span>
+                </button>
+              </div>
+            </footer>
+          </article>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           SCENE 4: FINAL BIRTHDAY CELEBRATION
+           ======================================================== -->
+      <section
+        id="scene-celebration"
+        class="scene"
+        aria-labelledby="celebration-title"
+        hidden
+      >
+        <div class="scene-card glass-panel celebration-panel">
+          <div class="celebration-crown-badge" aria-hidden="true">
+            <span>✨</span>
+            <span>Happy Level Up Day!</span>
+            <span>✨</span>
+          </div>
+
+          <h2 id="celebration-title" class="celebration-main-title">
+            🎉 HAPPY BIRTHDAY 🎉
+          </h2>
+
+          <p class="celebration-subtitle">
+            Semoga hari ini jadi salah satu hari yang kamu ingat.
+          </p>
+
+          <!-- Kue Ulang Tahun CSS Interaktif dengan Lilin -->
+          <div class="cake-stage">
+            <div class="cake-glow-backdrop" aria-hidden="true"></div>
+
+            <div
+              id="interactive-cake"
+              class="birthday-cake"
+              role="button"
+              tabindex="0"
+              aria-label="Kue ulang tahun dengan lilin menyala, klik untuk meniup lilin"
+            >
+              <!-- Lilin di Atas Kue -->
+              <div class="cake-candle">
+                <!-- Api Lilin -->
+                <div id="candle-flame" class="candle-flame">
+                  <div class="flame-outer"></div>
+                  <div class="flame-inner"></div>
+                  <div class="flame-glow"></div>
+                </div>
+
+                <!-- Asap saat Lilin Ditiup -->
+                <div id="candle-smoke" class="candle-smoke" aria-hidden="true">
+                  <span class="smoke-puff sp-1"></span>
+                  <span class="smoke-puff sp-2"></span>
+                  <span class="smoke-puff sp-3"></span>
+                </div>
+
+                <div class="candle-wick"></div>
+                <div class="candle-stick"></div>
+              </div>
+
+              <!-- Lapisan Atas Kue (Krim & Dekorasi) -->
+              <div class="cake-tier cake-top-tier">
+                <div class="frosting-drips">
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="cake-sprinkles" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+              </div>
+
+              <!-- Lapisan Bawah Kue -->
+              <div class="cake-tier cake-bottom-tier">
+                <div class="frosting-drips">
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="cake-cherry-row" aria-hidden="true">
+                  <span>🍓</span><span>✨</span><span>❤️</span><span>✨</span><span>🍓</span>
+                </div>
+              </div>
+
+              <!-- Piring Kue -->
+              <div class="cake-plate"></div>
+            </div>
+
+            <!-- Pesan Harapan Setelah Tiup Lilin -->
+            <p id="wish-status-text" class="wish-status-text">
+              Berdoa dulu dalam hati, terus tiup lilinnya yaa 🕯️✨
+            </p>
+          </div>
+
+          <!-- Tombol Interaksi Kue & Perayaan -->
+          <div class="celebration-actions">
+            <button type="button" id="btn-blow-candle" class="btn-primary btn-glow">
+              <span id="btn-blow-candle-text" class="btn-text">Tiup Lilinnya 🕯️💨</span>
+            </button>
+
+            <div class="secondary-actions-row">
+              <button type="button" id="btn-more-confetti" class="btn-secondary">
+                <span>Confetti Lagi 🎉</span>
+              </button>
+              <button type="button" id="btn-reread-letter" class="btn-secondary">
+                <span>Baca Surat Lagi 💌</span>
+              </button>
+              <button type="button" id="btn-replay-surprise" class="btn-secondary">
+                <span>Ulangi Surprise 🔄</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Script Vanilla JavaScript -->
+    <script src="./script.js" defer></script>
+  </body>
+</html>
